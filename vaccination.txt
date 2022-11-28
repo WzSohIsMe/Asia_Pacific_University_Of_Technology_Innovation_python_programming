@@ -1,0 +1,6 @@
+VC_1,BV,True,True
+VC_2,EC,True,True
+VC_3,DM,True,False
+VC_4,AF,True,False
+VC_5,BV,True,False
+VC_6,BV,False,False

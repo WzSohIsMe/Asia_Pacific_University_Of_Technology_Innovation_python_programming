@@ -1,0 +1,505 @@
+patientDetails = []
+vaccinationDetails = []
+
+FUNCTION writingTo()
+
+	FUNCTION writingListToPatient()
+		OPENFILE ("patient.txt","w") as patient_FileHandlerTHEN
+			
+			TRY
+				FOR patient in patientDetails
+					WRITE patient_FileHandler (patient[0])
+					
+					FOR detail in patient[1THEN]
+						WRITE patient_FileHandler (","+detail)
+					ENDFOR
+				ENDFOR
+				WRITE patient_FileHandler ("\n")
+			EXCEPT
+				PRINT ("File cannot be opened. \n")
+				EXIT()
+			
+		CLOSEFILE patient_FileHandler
+	ENDFUNCTION
+	
+	FUNCTION writingListToVaccination()
+		OPENFILE ("vaccination.txt","w") as vaccination_FileHandlerTHEN
+			
+			TRY
+				FOR patient in vaccinationDetails
+					WRITE vaccination_FileHandler (patient[0])
+					
+					FOR detail in patient[1THEN]
+						WRITE vaccination_FileHandler (","+detail)
+					ENDFOR
+				ENDFOR
+				WRITE vaccination_FileHandler("\n")
+			EXCEPT
+				PRINT ("File cannot be opened. \n")
+				EXIT()
+		CLOSEFILE vaccination_FileHandler
+	ENDFUNCTION
+	
+	writingListToPatient()
+	writingListToVaccination()
+	
+FUNCTION convert()
+	
+	FUNCTION listPatientDetails()
+		CLEAR patientDetails
+		TRY
+			OPENFILE ("patient.txt","r") as patient_FileHandler
+			READ patient_FileHandler as patient
+			
+			FOR line in patient
+				patientDetails.append(line)
+			ENDFOR
+			CLOSEFILE patient_FileHandler
+		EXCEPT
+			PRINT ("File cannot be opened. \n")
+			EXIT()
+	ENDFUNCTION
+	
+	FUNCTION listVaccinationDetails()
+		CLEAR vaccinationDetails
+		TRY
+			OPENFILE ("patient.txt","r") as vaccinationDetails_FileHandler
+			READ patient_FileHandler as vaccination
+			FOR line in vaccination
+				patientDetails.append(line)
+			ENDFOR
+			CLOSEFILE vaccination_FileHandler
+		EXCEPT
+			PRINT ("File cannot be opened. \n")
+			EXIT()
+
+	ENDFUNCTION
+	
+	listPatientDetails()
+	listVaccinationDetails()
+	
+FUNCTION newPatientRegistration()
+	convert()
+	dose1 = FALSE
+	dose2 = FALSE
+	
+	PRINT ("-"*80,"\n1. New Patient Registration","\n"+"-"*80)
+	PRINT ("You have entered to the new patient registration.\n")
+	PRINT ("-"*30+'Patient Details'+"-"*30)
+	
+	PRINT ("Choose a vacination centre [VC1/VC2]: ")
+	READ vaccinationCentre
+	IF vaccinationCentre=="vc1" OR vaccinationCentre=='Vc1' OR vaccinationCentre=="vC1" OR vaccinationCentre=="1" THEN
+		vaccinationCentre="VC1"
+	ELSE
+		IF vaccinationCentre=="vc2" OR vaccinationCentre=='Vc2' OR vaccinationCentre=="vC2" OR vaccinationCentre=="2" THEN
+		vaccinationCentre=="VC2"
+		ENDIF
+	ENDIF
+	
+	PRINT ("Enter name: ")
+	READ patientName
+	PRINT ("Enter contact numbers: ")
+	READ patientContact
+	
+	TRY
+		PRINT ("Enter your age: ")
+		READ patientAge
+		switch_patientAge = FALSE
+	EXCEPT ValueErrorTHEN
+		PRINT ("Invalid Input. Please enter your age properly. \n")
+		exit(newPatientRegistration())
+		
+	FUNCTION vaccineCode(patientAge)
+		list_vaccineCode = ["AF","BV","CZ","DM","EC"] #allvaccine
+		list_availableVaccinefor12Above = ["AF","CZ","DM"] #12above
+		list_availableVaccinefor18Above = ["AF","BV","CZ","DM","EC"] #18above
+		list_availableVaccinefor45Above = ["AF","BV","DM","EC"] #45above
+		list_availableVaccinefor12Below = 'No avaibale vaccine below 12 years old.' #12below
+		count = 0
+		PRINT ("-"*20+"Vaccine Codes"+"-"*20)
+		
+		IF(patientAge>=45) THEN
+			PRINT("Your available vaccine codes are: ")
+			FOR vccode IN list_availableVaccinefor45Above
+                PRINT(count+1,'.',vccode)
+                count = count + 1
+			ENDFOR
+			PRINT("Choose your vaccine code: ")
+			READ vcCodeOption
+            IF(vcCodeOption=='1')OR(vcCodeOption==list_availableVaccinefor45Above[0])THEN
+                vcCodeOption = list_availableVaccinefor45Above[0]
+			ELSE
+				IF(vcCodeOption=='2')or(vcCodeOption==list_availableVaccinefor45Above[1])THEN
+					vcCodeOption = list_availableVaccinefor45Above[1]
+				ELSE
+					IF(vcCodeOption=='3')or(vcCodeOption==list_availableVaccinefor45Above[2])THEN
+						vcCodeOption = list_availableVaccinefor45Above[2]
+					ELSE
+						IF(vcCodeOption=='4')or(vcCodeOption==list_availableVaccinefor45Above[3])THEN
+							vcCodeOption = list_availableVaccinefor45Above[3]
+						ENDIF
+					ENDIF
+				ENDIF
+				PRINT("You have chosen",vcCodeOption+'.\n')
+				READ vcCodeOption
+				RETURN vcCodeOption
+				ENDIF
+		ELSE
+			IF(patientAge>=18) THEN
+				PRINT("Your available vaccine codes are: ")
+				FOR vccode IN list_availableVaccinefor18Above
+					PRINT(count+1,'.',vccode
+					count = count + 1
+				ENDFOR
+				PRINT("Choose your vaccine code: ")
+				READ vcCodeOption				
+				
+				IF(vcCodeOption=='1')or(vcCodeOption==list_availableVaccinefor18Above[0]) THEN
+					vcCodeOption = list_availableVaccinefor18Above[0]
+				ELSE
+					IF(vcCodeOption=='2')or(vcCodeOption==list_availableVaccinefor18Above[1]) THEN
+						vcCodeOption = list_availableVaccinefor18Above[1]
+					ELSE
+						IF(vcCodeOption=='3')or(vcCodeOption==list_availableVaccinefor18Above[2])THEN
+							vcCodeOption = list_availableVaccinefor18Above[2]
+						ENDIF
+					ENDIF
+				ENDIF
+				PRINT("You have chosen",vcCodeOption+'.\n')
+				READ vcCodeOption
+				RETURN vcCodeOption
+			ELSE
+				IF(patientAge>=18) THEN
+					PRINT("Your available vaccine codes are: ")
+					FOR vccode IN list_availableVaccinefor18Above
+						PRINT(count+1,'.',vccode)
+						count = count + 1
+					ENDFOR
+					PRINT("Choose your vaccine code: ")
+					READ vcCodeOption
+					
+					IF(vcCodeOption=='1')or(vcCodeOption==list_availableVaccinefor18Above[0])THEN
+						vcCodeOption = list_availableVaccinefor18Above[0]
+					ELSE
+						IF(vcCodeOption=='2')or(vcCodeOption==list_availableVaccinefor18Above[1])THEN
+							vcCodeOption = list_availableVaccinefor18Above[1]
+						ELSE
+							IF(vcCodeOption=='3')or(vcCodeOption==list_availableVaccinefor18Above[2]) THEN
+								vcCodeOption = list_availableVaccinefor18Above[2]
+							ELSE
+								IF(vcCodeOption=='4')or(vcCodeOption==list_availableVaccinefor18Above[3]) THEN
+									vcCodeOption = list_availableVaccinefor18Above[3]
+								ELSE
+									IF(vcCodeOption=='5')or(vcCodeOption==list_availableVaccinefor18Above[4]) THEN
+										vcCodeOption = list_availableVaccinefor18Above[4]
+									ENDIF
+								ENDIF
+							
+							ENDIF
+						ENDIF
+					ENDIF
+					PRINT("You have chosen",vcCodeOption+'.\n')
+					READ vcCodeOption
+					RETURN vcCodeOption
+				ELSE
+					IF(patientAge >= 12)THEN
+						PRINT("Your available vaccine codes are: ")
+						FOR vccode in list_availableVaccinefor12Above
+							PRINT(count+1,'.',vccode)
+							count = count + 1
+						ENDFOR
+						PRINT("Choose your vaccine code: ")
+						READ vcCodeOption
+						
+						IF(vcCodeOption=='1')or(list_availableVaccinefor12Above[0])THEN
+							vcCodeOption = list_availableVaccinefor12Above[0]
+						ELSE
+							IF(vcCodeOption=='2')or(vcCodeOption==list_availableVaccinefor12Above[1])THEN
+								vcCodeOption = list_availableVaccinefor12Above[1]
+							ELSE
+								IF(vcCodeOption=='3')or(vcCodeOption==list_availableVaccinefor12Above[2]) THEN
+									vcCodeOption = list_availableVaccinefor12Above[2]
+								ENDIF
+							ENDIF
+						ENDIF
+						PRINT("You have chosen",vcCodeOption+'.\n')
+						READ vcCodeOption
+						RETURN vcCodeOption
+						
+					ELSE
+						IF(patientAge <= 12) and (patientAge>=0) THEN
+							PRINT(list_availableVaccinefor12Below)
+							RETURN none
+						
+						ELSE
+							PRINT("Error at choosing vaccine code. Please insert details properly. \n)
+							EXIT(newPatientRegistration())
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDFUNCTION
+	
+	FUNCTION patientID()
+		patientNum = 0
+		start = 0
+		end = 0
+		FOR i IN patientDetails
+			end = end + 1
+		ENDFOR
+		LOOP i FROM start TO end STEP 1
+			patientNum = patientNum + 1
+		ENDLOOP
+		patientIDgen = "VC"+'_'+ patientNum
+		RETURN patientIDgen
+	ENDFUNCTION
+		
+	IF (patientAge>=12)THEN
+        patientID = patientID()
+        vaccineCode = vaccineCode(patientAge)
+        PRINT("Your ID is",patientID,"\n")
+
+        patientDetails.append([patientID,patientName,patientAge,vaccinationCentre,patientContact,vaccineCode,dose1,dose2])
+        vaccinationDetails.append([patientID,vaccineCode,dose1,dose2])
+
+        TRY
+            OPENFILE("patient.txt","a") as patient_FileHandler
+            WRITE patient_FileHandler (f"{patientID},{patientName},{patientAge},{vaccinationCentre},{patientContact},{vaccineCode},{dose1},{dose2}\n")
+            CLOSEFILE patient_FileHandler
+        EXCEPT
+            PRINT("File cannot be opened. \n")
+            EXIT()		
+			
+		TRY
+            OPENFILE("vaccination.txt","a") as vaccination_FileHandler
+			WRITE vaccination_FileHandler (f"{patientID},{vaccineCode},{dose1},{dose2}\n")
+			CLOSEFILE vaccination_FileHandler
+        EXCEPT
+            PRINT("File cannot be opened. \n")
+            EXIT()			
+		
+		PRINT("Your data has been recorded. \n")
+	
+	ELSE
+		IF(patientAge<=12)THEN
+			PRINT("No vaccination below 12 years old. \n")
+		ELSE
+			PRINT("Error at registering age. \n")
+		ENDIF
+	ENDIF
+	
+FUNCTION vaccineAdministration()
+	PRINT ("Enter your ID: ")
+	READ patientID 
+	PRINT()
+	
+	FUNCTION vacWeekDisplay()
+        week_AF = 'Please register for dose 2 after 2 weeks (or 14 days).\n'
+        week_BV = 'Please register for dose 2 after 3 weeks (or 21 days).\n'
+        week_CZ = 'Please register for dose 2 after 3 weeks (or 21 days).\n'
+        week_DM = 'Please register for dose 2 after 4 weeks (or 28 days).\n'
+        week_EC = 'You have completed your vaccination. '	
+
+		FOR patient IN vaccinationDetails
+			IF(patient[0])==patientID)THEN
+				IF(patient[1])=='AF')THEN
+					RETURN  week_AF
+				ELSE
+					IF (patient[1] =='BV')THEN
+						RETURN week_BV
+					ELSE
+						IF(patient[1] == 'CZ')THEN
+							RETURN week_CZ
+						ELSE
+							IF(patient[1] == 'DM')THEN
+								RETURN week_DM
+							ELSE
+								RETURN week_EC
+							ENDIF
+						ENDIF
+					ENDIF
+		ELSE
+			PRINT("Error at showing weeks. ")
+			ENDIF
+		ENDFOR
+	ENDFUNCTION
+	
+	FOR patient in vaccinationDetails:
+		IF  patient[0]==patientID THEN
+			IF patient[-2]=='False' THEN
+				IF patient[1] == 'EC' THEN
+					PRINT("Do you want to register for EC [yes/no]: ")
+					READ option
+					PRINT()
+					
+					IF(option=='yes')THEN
+						patient[-2]=True
+                        patient[-1]=True
+						FOR patient IN patientDetails
+							IF patient[0]==patientID THEN
+								patient[-2]=True
+                                patient[-1]=True
+							ENDIF
+						ENDFOR
+						writingTo()
+						PRINT("Your data has been updated. \n")
+					ELSE:
+						PRINT("Do you want to register for dose 1 [yes/no]: ")
+						PRINT()
+						IF(option=='yes')THEN
+							patient[-2]=True
+							FOR patient IN patientDetails
+								IF patient[0]==patientID THEN
+									patient[-2]=True
+								ENDIF
+							ENDFOR
+							PRINT(vacWeekDisplay())
+							writingTo()
+							PRINT("Your data has been updated. \n")
+						
+						ELSE
+							IF patient[-1]=='False' THEN
+								PRINT("Do you want to register for dose 2 [yes/no]: ")
+								PRINT()
+								IF(option==''yes)THEN
+									patient[-1]=TRUE
+									FOR person IN patientDetails
+										IF person[0]==patientID:
+											person[-1]=True
+									PRINT("You have registered for dose 2. \n")
+									writingTo()
+									PRINT("Your data has been ipdated. \n")
+									
+							ELSE
+								PRINT("You have registered for dose 1 and dose 2. \n")
+							ENDIF
+						
+					ENDIF
+			BREAK			
+				ENDIF
+			ENDIF
+	ELSE
+		PRINT("ID not found. ")
+		ENDIF
+	ENDFOR
+ENDFUNCTION
+
+FUNCTION searchPatientRecordAndVaccinationStatus()
+    before_dose1 = 'NEW'
+    after_dose1 = 'COMPLETED-D1'
+    after_dose1_EC = 'COMPLETED'
+    after_dose2 = after_dose1_EC
+	PRINT("Search ID: ")
+	READ patientID
+    PRINT(f"Searching {patientID}......\n")
+	FOR patient IN patientDetails
+		IF patient[0] = patientID THEN
+			PRINT(f"\tName        : {patient[1]}\n")
+            PRINT(f"\tAge         : {patient[2]}\n")
+            PRINT(f"\tVaccine Code: {patient[-3]}\n")
+			IF patient[-2] == 'False' and patient[-1] == 'False' THEN
+				print(f"\tStatus      : {before_dose1}\n")
+			ELSE
+				IF patient[-2] == 'True' and patient[-1] == 'False' THEN
+					IF patient[-3]== 'EC'THEN
+						print(f"\tStatus      : {after_dose1_EC}\n")
+					ELSE
+						print(f"\tStatus      : {after_dose1}\n")
+					ENDIF
+				ELSE
+					IF patient[-1] == 'True' THEN
+						print(f"\tStatus      : {after_dose2}\n")
+					ELSE
+						PRINT("Error at showing status. ")
+					ENDIF
+				ENDIF
+			ENDIF
+			BREAK
+	ELSE:
+		PRINT("ID not found. ")
+
+	ENDFOR
+ENDFUNCTION
+
+
+FUNCTION statisticalInformationOnPatientsVaccinated()
+	patientNum_VC1_dose2 = 0
+    patientNum_VC1_complete = 0
+	
+	patientNum_VC2_dose2 = 0
+    patientNum_VC2_complete = 0
+	
+	FOR patient IN patientDetails
+		IF patient[3] == 'VC1' THEN
+			IF patient[-1] == 'False' and patient[-2] =='True' THEN
+				patientNum_VC1_dose2 = patientNum_VC1_dose2 + 1
+			ELSE
+				IF patient[-1] == 'True' THEN
+					patientNum_VC1_complete = patientNum_VC1_complete+ 1
+				ENDIF
+			ENDIF
+		ELSE
+			IF patient[3] =='VC2'THEN
+				IF patient[-1]=="False" and patient[-2] == 'True' THEN
+					patientNum_VC2_dose2 = patientNum_VC2_dose2 + 1
+				ELSE
+					IF patient[-1] == 'True' THEN
+						patientNum_VC2_complete = patientNum_VC2_complete + 1
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+
+		
+	PRINT("-"*20,"Vaccination Centre 1","-"*20,"\n")
+	PRINT("People who are waiting for dose 2: ",patientNum_VC1_dose2)
+	PRINT("People who have completed vaccination: ",patientNum_VC1_complete)
+	
+	PRINT("-"*20,"Vaccination Centre 2","-"*20,"\n")
+	PRINT("People who are waiting for dose 2: ",patientNum_VC2_dose2)
+	PRINT("People who have completed vaccination: ",patientNum_VC2_complete)
+ENDFUNCTION
+
+FUNCTION menu():
+	switch = TRUE
+	DOWHILE(switch=TRUE)
+		convert()
+		PRINT("[Enter] to show main menu......")
+		READ showMainMenu
+		PRINT("-"*20+"Main Menu"+"-"*20)
+		PRINT("\t1. New Patient Registration\n")
+		PRINT("\t2. Vaccine Administration\n")
+		PRINT("\t3. Search Patient Record and Vaccination Status\n")
+		PRINT("\t4. Statistical Information on Patients Vaccinated\n")
+		
+		PRINT("\tInsert 1/2/3/4 to choose the option[x to exit]: ")
+		READ option
+		
+		IF(option=='1')THEN
+			newPatientRegistration()
+		ELSE
+			IF(option=='2')THEN
+                vaccineAdministration()
+			ELSE
+				IF(option=='3')THEN
+					searchPatientRecordAndVaccinationStatus()
+				ELSE
+					IF(option=='4')THEN
+						statisticalInformationOnPatientsVaccinated()
+					ELSE
+						IF(option=='x')THEN
+							switch==FALSE
+							BREAK
+						ELSE
+							PASS
+						ENDIF
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDDO
+ENDFUNCTION
+
+menu()
